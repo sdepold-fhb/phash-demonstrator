@@ -22,8 +22,8 @@ Workflow on EC2:
   #Connect via ssh
   sudo apt-get update
   sudo apt-get install imagemagick
-  git clone git://github.com/sdepold-fhb/phash.git
-  cd phash/ruby-phashion/vendor/
+  git clone git://github.com/sdepold-fhb/phash-demonstrator.git
+  cd phash-demonstrator/ruby-phashion/vendor/
   sudo apt-get install libjpeg62
   sudo apt-get install libjpeg62-dev
   sudo gem install ./phashion-1.0.2.gem
