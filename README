@@ -13,7 +13,7 @@ Installing the rest:
   - install ImageMagick via HomeBrew (mac) oder apt-get (ubuntu)
 
 Starten der App:
-  - ruby phash.rb
+  - ruby app.rb
   - browse http://localhost:4567/
   
 Workflow on EC2:
@@ -30,4 +30,4 @@ Workflow on EC2:
   sudo gem install sinatra
   sudo gem install sinatra-reloader
   cd ..
-  sudo RACK_ENV=production ruby phash.rb  -p 80
+  sudo RACK_ENV=production ruby app.rb  -p 80
