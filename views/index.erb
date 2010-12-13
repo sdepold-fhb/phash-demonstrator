@@ -14,22 +14,27 @@
     </div>
     
     <br/>
-    
-    <div class="bordered">
-      <h2>...or choose an existing one!</h2>
-      <%=
-        uploads_folder = File.dirname(__FILE__) + "/../public/uploads"
-        Dir.entries(uploads_folder).map do |folder|
-          next if %w(. .. .DS_Store).include?(folder)
-          next unless thumb_file = Dir.entries("#{uploads_folder}/#{folder}").select{|file| file.index("mini") == 0}.first
 
-          "<a href='/analyze/#{folder}/#{thumb_file.split(".").last}'><img src='/uploads/#{folder}/#{thumb_file}' class='overview_image' /></a>"
-          
-          # next unless File.exists?("#{uploads_folder}/#{folder}/")
-        end.compact.join("")
-      %>
-      
-      <div style="clear: both"></div>
-    </div>
+    <%
+      uploads_folder = File.dirname(__FILE__) + "/../public/uploads"
+      if File.exists?(uploads_folder)
+    %>
+      <div class="bordered">
+        <h2>...or choose an existing one!</h2>
+        <%=
+
+          Dir.entries(uploads_folder).map do |folder|
+            next if %w(. .. .DS_Store).include?(folder)
+            next unless thumb_file = Dir.entries("#{uploads_folder}/#{folder}").select{|file| file.index("mini") == 0}.first
+
+            "<a href='/analyze/#{folder}/#{thumb_file.split(".").last}'><img src='/uploads/#{folder}/#{thumb_file}' class='overview_image' /></a>"
+
+            # next unless File.exists?("#{uploads_folder}/#{folder}/")
+          end.compact.join("")
+        %>
+
+        <div style="clear: both"></div>
+      </div>
+    <% end %>
   </body>
 </html>
