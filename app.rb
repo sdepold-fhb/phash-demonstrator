@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + "/vendor/mojo_magick/lib/mojo_magick.rb"
 
 IMAGE_UPLOAD_PATH = "./public/uploads"
 
-def compare_images(params)
+def modify_image(params)
   path = File.expand_path("#{IMAGE_UPLOAD_PATH}/#{params[:filename]}")
   file_ending = MojoMagick::file_ending("#{path}/source*")
   source_path = "#{path}/source.#{file_ending}"
@@ -15,16 +15,22 @@ def compare_images(params)
   options_as_string = options.to_a.map{|o| o.join("")}.join("")
   modified = "#{options_as_string}.#{file_ending}"
   modified_path = "#{path}/#{modified}"
-  
-  MojoMagick::resize(source_path, modified_path, options) unless File.exists?(modified)
 
-  Phashion::Image::SETTINGS[:dupe_threshold] = params["threshold"].to_i || 15
-  puts Phashion::Image::SETTINGS[:dupe_threshold]
-
-  img1 = Phashion::Image.new(source_path)
-  img2 = Phashion::Image.new(modified_path)
+  unless File.exists? modified_path
+    puts "woooot"
+    MojoMagick::resize(source_path, modified_path, options)
+  end
   
-  {:result => img1.duplicate?(img2), :modified_filename => modified}
+  modified
+end
+
+def compare_images(filename_1, filename_2, threshold=15)
+  Phashion::Image::SETTINGS[:dupe_threshold] = threshold
+
+  img1 = Phashion::Image.new(IMAGE_UPLOAD_PATH + "/" + filename_1)
+  img2 = Phashion::Image.new(IMAGE_UPLOAD_PATH + "/" + filename_2)
+  
+  img1.duplicate?(img2)
 end
 
 get "/" do
@@ -43,17 +49,19 @@ post "/upload" do
   FileUtils.mkdir_p(upload_path)
   FileUtils.mv(params[:image][:tempfile].path, source)
   
-  MojoMagick::resize(source, upload_path + "/thumb.#{file_ending}", :width => 320, :height => 240, :absolute_aspect => true)
+  MojoMagick::resize(source, upload_path + "/thumb.#{file_ending}", :width => 380, :height => 285, :absolute_aspect => true)
   MojoMagick::resize(source, upload_path + "/mini.#{file_ending}", :width => 240, :height => 180, :absolute_aspect => true)
     
   redirect "/analyze/#{File.basename(upload_path)}/#{file_ending}"
 end
 
-get "/compare/:filename" do
-  comparison = compare_images(params)
-  
-  [
-    "<img width='320' height='240' src='/uploads/#{params[:filename]}/#{comparison[:modified_filename]}' />",
-    comparison[:result] ? "Equal" : "Not equal"
-  ].join("<br/>")
+get "/modify/:filename" do
+  modified_filename = modify_image params
+  "<img width='380' height='285' src='/uploads/#{params[:filename]}/#{modified_filename}' />"
+end
+
+get "/compare/:path_1/:path_2" do
+  # path_x is a path inside the public/uploads folder; slashes are masked as pipes
+  result = compare_images(params[:path_1].gsub("|", "/"), params[:path_2].gsub("|", "/"), params["threshold"].to_i || 15)
+  result ? "Equal" : "Not equal"
 end

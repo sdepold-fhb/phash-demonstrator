@@ -3,16 +3,23 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title></title>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
-        console.log("asd")
         var values = { quality: 100, scale: 100, threshold: 15 }
           , onChange = function(event, ui) {
               var valueKey = $(ui.handle).parent().get(0).id
               values[valueKey] = ui.value
-              $("#modified").load("/compare/<%= params[:filename] %>?quality=" + values.quality + "&scale=" + values.scale + "&threshold=" + values.threshold)
+
+              var options = "?quality=" + values.quality + "&scale=" + values.scale + "&threshold=" + values.threshold
+              $("#modified").load("/modify/<%= params[:filename] %>" + options, function(img) {
+                var source_filename = $("#source img").get(0).src.split("/uploads/")[1].replace(/\//g, "|")
+                  , modified_filename = $("#modified img").get(0).src.split("/uploads/")[1].replace(/\//g, "|")
+
+                $("#compareResult").load("/" + ["compare", source_filename, modified_filename].join("/") + options)
+              })
             }
           , onSlide = function(event, ui) {
               var valueKey = $(ui.handle).parent().get(0).id
@@ -28,28 +35,43 @@
     </script>
   </head>
   <body>
-    <div style="width: 700px">
-      <div style="float: left  ">
+    <div class="bordered">
+      <small><a href="/" class="whiteLink">back</a></small>
+
+
+      <h2>Compare an image with a modified version of itself:</h2>
+      
+      <div style="float: left; font-size: 12px;">
         Original:<br/>
-        <img src="/uploads/<%= params[:filename] %>/thumb.<%= params[:file_ending] %>" />
+        <div id="source"><img src="/uploads/<%= params[:filename] %>/thumb.<%= params[:file_ending] %>" /></div>
       </div>
-      <div style="float: left">
+      <div style="float: right; font-size: 12px;">
         Modified:<br/>
-        <div id="modified">
-          <img src="/uploads/<%= params[:filename] %>/thumb.<%= params[:file_ending] %>" /><br/>
-          Equal
-        </div>
+        <div id="modified"><img src="/uploads/<%= params[:filename] %>/thumb.<%= params[:file_ending] %>" /></div>
       </div>
       <div style="clear: both;"></div>
-      <br /><br/>
-      Quality: <span id="qualityValue"></span><br /><br/>
-      <div id="quality" class="slider"></div><br/>
+    </div>
 
-      Scale: <span id="scaleValue"></span><br /><br/>
-      <div id="scale" class="slider"></div><br/>
+    <br/>
 
-      Threshold: <span id="thresholdValue"></span><br /><br/>
+    <div class="bordered">
+      <h2>Options:</h2>
+
+      <div class="sliderLabel">Quality: <span id="qualityValue"></span></div>
+      <div id="quality" class="slider"></div>
+
+      <div class="sliderLabel">Scale: <span id="scaleValue"></span></div>
+      <div id="scale" class="slider"></div>
+
+      <div class="sliderLabel">Threshold: <span id="thresholdValue"></span></div>
       <div id="threshold" class="slider"></div>
+      
+    </div>
+
+    <br/>
+
+    <div class="bordered">
+      <h2>Result: <span id="compareResult"></span></h2>
     </div>
   </body>
 </html>

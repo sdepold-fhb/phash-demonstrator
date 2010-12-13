@@ -29,3 +29,12 @@ input[type=file] {
   float: left;
   margin: 10px;
 }
+
+.sliderLabel {
+  margin: 10px 0px 3px 0px;
+}
+
+.whiteLink {
+  color: white;
+  text-decoration: none;
+}
