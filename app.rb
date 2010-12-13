@@ -17,7 +17,6 @@ def modify_image(params)
   modified_path = "#{path}/#{modified}"
 
   unless File.exists? modified_path
-    puts "woooot"
     MojoMagick::resize(source_path, modified_path, options)
   end
   
