@@ -43,7 +43,8 @@ post "/upload" do
   FileUtils.mkdir_p(upload_path)
   FileUtils.mv(params[:image][:tempfile].path, source)
   
-  MojoMagick::resize(source, upload_path + "/thumb.#{file_ending}", :width => 320, :height => 240)
+  MojoMagick::resize(source, upload_path + "/thumb.#{file_ending}", :width => 320, :height => 240, :absolute_aspect => true)
+  MojoMagick::resize(source, upload_path + "/mini.#{file_ending}", :width => 240, :height => 180, :absolute_aspect => true)
     
   redirect "/analyze/#{File.basename(upload_path)}/#{file_ending}"
 end

@@ -2,11 +2,34 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>pHash</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
-    <form action="/upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-      Bild: <input type="file" name="image" />
-      <input type="submit" value="Hochladen">
-    </form>
+    <div class="bordered">
+      <h2>Upload an image...</h2>
+      <form action="/upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+        <input type="file" name="image" />
+        <input type="submit" value="Upload">
+      </form>
+    </div>
+    
+    <br/><br/>
+    
+    <div class="bordered">
+      <h2>...or choose an existing one!</h2>
+      <%=
+        uploads_folder = File.dirname(__FILE__) + "/../public/uploads"
+        Dir.entries(uploads_folder).map do |folder|
+          next if %w(. .. .DS_Store).include?(folder)
+          next unless thumb_file = Dir.entries("#{uploads_folder}/#{folder}").select{|file| file.index("mini") == 0}.first
+
+          "<a href='/analyze/#{folder}/#{thumb_file.split(".").last}'><img src='/uploads/#{folder}/#{thumb_file}' class='overview_image' /></a>"
+          
+          # next unless File.exists?("#{uploads_folder}/#{folder}/")
+        end.compact.join("")
+      %>
+      
+      <div style="clear: both"></div>
+    </div>
   </body>
 </html>

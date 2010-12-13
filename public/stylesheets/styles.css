@@ -1,0 +1,31 @@
+body {
+  padding: 50px;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Verdana;
+  line-height: 1.5;
+  background: transparent url(/images/pattern.png);
+}
+
+input[type=file] {
+  color: white;
+}
+
+.bordered {
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid #888;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 16px #000, 0 0 1px #000, 0 0 1px #000;
+  -o-box-shadow: 0 2px 16px #000, 0 0 1px #000, 0 0 1px #000;
+  -webkit-box-shadow: 0 2px 16px #000, 0 0 1px #000, 0 0 1px #000;
+  -moz-box-shadow: 0 2px 16px #000, 0 0 1px #000, 0 0 1px #000;
+  width: 780px;
+  margin: auto;
+}
+
+.overview_image {
+  float: left;
+  margin: 10px;
+}
